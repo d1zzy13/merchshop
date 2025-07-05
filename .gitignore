@@ -1,0 +1,8 @@
+# Скрыть файл с конфигами
+configs/config.yaml
+.env
+
+# Скрыть IDE и кэш
+.vscode/
+.idea/
+*.log

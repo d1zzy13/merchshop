@@ -1,0 +1,198 @@
+basePath: /api
+definitions:
+  AuthRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  CoinHistoryInfo:
+    properties:
+      received:
+        items:
+          $ref: '#/definitions/CoinOperation'
+        type: array
+      sent:
+        items:
+          $ref: '#/definitions/CoinOperation'
+        type: array
+    type: object
+  CoinOperation:
+    properties:
+      amount:
+        type: integer
+      fromUser:
+        type: string
+      toUser:
+        type: string
+    type: object
+  ErrorResponse:
+    properties:
+      errors:
+        type: string
+    type: object
+  InfoResponse:
+    properties:
+      coinHistory:
+        $ref: '#/definitions/CoinHistoryInfo'
+      coins:
+        type: integer
+      inventory:
+        items:
+          $ref: '#/definitions/InventoryItem'
+        type: array
+    type: object
+  InventoryItem:
+    properties:
+      quantity:
+        type: integer
+      type:
+        type: string
+    type: object
+  SendCoinRequest:
+    properties:
+      amount:
+        type: integer
+      toUser:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API для мерчшопа
+  title: MerchShop API
+  version: "1.0"
+paths:
+  /auth:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные авторизации
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/AuthRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешный ответ
+          schema:
+            $ref: '#/definitions/InfoResponse'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Неавторизован
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      summary: Авторизация пользователя
+      tags:
+      - default
+  /buy/{item}:
+    get:
+      parameters:
+      - description: Название предмета
+        in: path
+        name: item
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешный ответ
+          schema:
+            $ref: '#/definitions/InfoResponse'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Неавторизован
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Купить предмет из магазина
+      tags:
+      - default
+  /info:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешный ответ
+          schema:
+            $ref: '#/definitions/InfoResponse'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Неавторизован
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Получить информацию о пользователе
+      tags:
+      - default
+  /sendCoin:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Кому и сколько отправить
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/SendCoinRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешный ответ
+          schema:
+            $ref: '#/definitions/InfoResponse'
+        "400":
+          description: Неверный запрос
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "401":
+          description: Неавторизован
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Отправить монеты другому пользователю
+      tags:
+      - default
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

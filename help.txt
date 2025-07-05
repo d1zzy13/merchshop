@@ -1,0 +1,9 @@
+swag init -g cmd/main.go -o cmd/docs --parseDependency  --- сборка доки
+
+go test ./... --cover --- покрытие тестами каждого файла
+
+
+сколько покрыл всего тестами{
+go test ./... -coverprofile=coverage.out
+go tool cover -func=coverage 
+}
